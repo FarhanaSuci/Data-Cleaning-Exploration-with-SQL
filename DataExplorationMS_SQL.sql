@@ -81,6 +81,21 @@
  ON vac.location = death.location;
 
  --Looking at total population  vs vaccinations
+ 
+ select dea.continent, dea.location, dea.date, dea.population,
+ vac.new_vaccinations, SUM(Cast( vac.new_vaccinations as int )) 
+ OVER (Partition by  dea.location 
+ Order by dea.location,dea.Date) as RollingPeopleVaccinated
+ From SUCHI..CovidDeaths$ dea
+ JOIN SUCHI..CovidVaccinations$ vac
+   ON dea.location = vac.location
+   and dea.date = vac.date
+Where dea.continent is not null
+Order By 2,3;
+
+--Use CTE
+
+
 
 
 
