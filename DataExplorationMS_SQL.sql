@@ -94,6 +94,69 @@ Where dea.continent is not null
 Order By 2,3;
 
 --Use CTE
+With popVSVac (continent,location,date,population,
+new_vaccinations,RollingPeopleVaccinated)
+as
+(
+ select dea.continent, dea.location, dea.date, dea.population,
+ vac.new_vaccinations, SUM(Cast( vac.new_vaccinations as int )) 
+ OVER (Partition by  dea.location 
+ Order by dea.location,dea.Date) as RollingPeopleVaccinated
+ From SUCHI..CovidDeaths$ dea
+ JOIN SUCHI..CovidVaccinations$ vac
+   ON dea.location = vac.location
+   and dea.date = vac.date
+--Where dea.continent is not null
+--Order By 2,3
+)
+select * ,  (RollingPeopleVaccinated/population)*100
+from popVSVac
+
+---TEMP Table
+DROP Table if exists #PercentagePopulationVaccinated
+create table #PercentagePopulationVaccinated
+(
+continent nvarchar(255),
+location nvarchar(255),
+Date datetime,
+population numeric,
+new_vaccinations numeric,
+RollingPeopleVaccinated numeric
+)
+Insert into #PercentagePopulationVaccinated
+select dea.continent, dea.location, dea.date, dea.population,
+ vac.new_vaccinations, SUM(Cast( vac.new_vaccinations as int )) 
+ OVER (Partition by  dea.location 
+ Order by dea.location,dea.Date) as RollingPeopleVaccinated
+ From SUCHI..CovidDeaths$ dea
+ JOIN SUCHI..CovidVaccinations$ vac
+   ON dea.location = vac.location
+   and dea.date = vac.date
+Where dea.continent is not null
+
+select * ,  (RollingPeopleVaccinated/population)*100 
+percentage_vaccinated
+from #PercentagePopulationVaccinated
+
+
+---Creating  view to store data for visualization
+
+Create View PercentagePopulationVaccinated as 
+select dea.continent, dea.location, dea.date, dea.population,
+ vac.new_vaccinations, SUM(Cast( vac.new_vaccinations as int )) 
+ OVER (Partition by  dea.location 
+ Order by dea.location,dea.Date) as RollingPeopleVaccinated
+ From SUCHI..CovidDeaths$ dea
+ JOIN SUCHI..CovidVaccinations$ vac
+   ON dea.location = vac.location
+   and dea.date = vac.date
+Where dea.continent is not null
+
+Select *
+From PercentagePopulationVaccinated
+
+
+
 
 
 
