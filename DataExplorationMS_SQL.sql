@@ -24,9 +24,47 @@
  --Shows what percentage of population got covid
 
  Select location,date,population,total_cases,
-   (total_cases/population)*100 as CovidPercentage
+   (total_cases/population)*100 as PercentagePopulationInfected
   From SUCHI..CovidDeaths$
   Where location like '%states%'
   order by 1,2;
+
+  --Looking at countries with highest Infection
+  --Rate compared to population
+
+  Select location,population,MAX(total_cases) as HighestInfectionCount ,
+  Max((total_cases/population))*100 as PercentagePopulationInfected
+  From SUCHI..CovidDeaths$
+  where continent is not null
+  Group by location , population
+  order by PercentagePopulationInfected desc;
+
+  --Showing Countries with Highest Death 
+  --Count per Population
+
+  Select location,MAX(cast(total_deaths as int)) as TotalDeathCount
+  From SUCHI..CovidDeaths$
+  where continent is not null
+  Group by location 
+  order by TotalDeathCount desc;
+
+  ---LET'S BREAK THINGS DOWN BY CONTINENT
+  --Showing continents with highest death count per population
+
+  Select continent,MAX(cast(total_deaths as int)) as TotalDeathCount
+  From SUCHI..CovidDeaths$
+  where continent is not null
+  Group by continent
+  order by TotalDeathCount desc;
+
+  --Global numbers
+  Select date,population,total_cases,
+   (total_cases/population)*100 as PercentagePopulationInfected
+  From SUCHI..CovidDeaths$
+  --Where location like '%states%'
+  Where continent is not null
+  GROUP BY date
+  order by 1,2;
+
 
 
