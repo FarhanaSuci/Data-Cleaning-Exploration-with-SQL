@@ -80,7 +80,7 @@
  SUCHI..CovidDeaths$ death
  ON vac.location = death.location;
 
- --Looking at Total population VS Vaccinations 
+ --Looking at total population  vs vaccinations
 
 
 
