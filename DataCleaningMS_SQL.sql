@@ -51,8 +51,28 @@ JOIN SUCHI.dbo.Housing$ as b
 
  SELECT PropertyAddress
  FROM SUCHI.dbo.Housing$;
+ 
+
+ SELECT 
+ SUBSTRING(PropertyAddress,1,CHARINDEX(',',PropertyAddress)-1) as Address
+ ,SUBSTRING(PropertyAddress,CHARINDEX(',',PropertyAddress)+1,LEN(PropertyAddress)) as Address
+ From SUCHI.dbo.Housing$;
 
 
+ALTER Table Housing$
+Add PropertySplitAddress Nvarchar(255);
+
+Update Housing$
+SET PropertySplitAddress = SUBSTRING(PropertyAddress,1,CHARINDEX(',',PropertyAddress)-1)
+
+ALTER Table Housing$
+Add PropertySplitCity Nvarchar(255);
+
+Update Housing$
+SET PropertySplitCity = SUBSTRING(PropertyAddress,CHARINDEX(',',PropertyAddress)+1,LEN(PropertyAddress))
+
+SELECT *
+From SUCHI.dbo.Housing$;
 
 
 
