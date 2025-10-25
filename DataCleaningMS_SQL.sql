@@ -74,6 +74,47 @@ SET PropertySplitCity = SUBSTRING(PropertyAddress,CHARINDEX(',',PropertyAddress)
 SELECT *
 From SUCHI.dbo.Housing$;
 
+SELECT OwnerAddress
+FROM SUCHI.dbo.Housing$;
+
+SELECT 
+PARSENAME(REPLACE(OwnerAddress,',','.'),3),
+PARSENAME(REPLACE(OwnerAddress,',','.'),2),
+PARSENAME(REPLACE(OwnerAddress,',','.'),1)
+FROM SUCHI.dbo.Housing$;
+
+
+
+
+ALTER Table Housing$
+Add OwnerSplitAddress Nvarchar(255);
+
+Update Housing$
+SET OwnerSplitAddress = PARSENAME(REPLACE(OwnerAddress,',','.'),3);
+
+ALTER Table Housing$
+Add OwnerSplitCity Nvarchar(255);
+
+Update Housing$
+SET OwnerSplitCity = PARSENAME(REPLACE(OwnerAddress,',','.'),2);
+
+ALTER Table Housing$
+Add OwnerSplitState Nvarchar(255);
+
+Update Housing$
+SET OwnerSplitState = PARSENAME(REPLACE(OwnerAddress,',','.'),1);
+
+SELECT *
+From SUCHI.dbo.Housing$;
+
+-- Change Y and N to Yes and No in "Sold as Vacant" field
+
+
+
+
+
+
+
 
 
 
