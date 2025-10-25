@@ -109,9 +109,25 @@ From SUCHI.dbo.Housing$;
 
 -- Change Y and N to Yes and No in "Sold as Vacant" field
 
+SELECT DISTINCT(SoldASVacant),Count(SoldASVacant)
+From SUCHI.dbo.Housing$
+GROUP BY SoldASVacant
+Order By 2 DESC;
 
+SELECT SoldASVacant
+   ,CASE When SoldASVacant = 'Y' THEN 'YES'
+        When SoldASVacant = 'N' THEN 'NO'
+        ELSE SoldASVacant
+        END
+From SUCHI.dbo.Housing$;
 
+Update Housing$
+SET SoldASVacant = CASE When SoldASVacant = 'Y' THEN 'YES'
+        When SoldASVacant = 'N' THEN 'NO'
+        ELSE SoldASVacant
+        END
 
+---Remove Duplicates
 
 
 
