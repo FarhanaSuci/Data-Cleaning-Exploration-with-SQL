@@ -127,10 +127,53 @@ SET SoldASVacant = CASE When SoldASVacant = 'Y' THEN 'YES'
         ELSE SoldASVacant
         END
 
----Remove Duplicates
+---Showing Duplicates
+With RowNumCTE AS (
+SELECT *,
+      ROW_NUMBER() OVER(
+      PARTITION BY ParcelID,
+      PropertyAddress,
+      SalePrice,
+      SaleDate,
+      LegalReference
+      ORDER BY
+          UniqueID) row_num
+
+From SUCHI.dbo.Housing$
+)
+SELECT *
+FROM RowNumCTE 
+Where row_num >1
+Order by PropertyAddress;
+
+--Remove Duplicates
+
+With RowNumCTE AS (
+SELECT *,
+      ROW_NUMBER() OVER(
+      PARTITION BY ParcelID,
+      PropertyAddress,
+      SalePrice,
+      SaleDate,
+      LegalReference
+      ORDER BY
+          UniqueID) row_num
+
+From SUCHI.dbo.Housing$
+)
+DELETE
+FROM RowNumCTE 
+Where row_num >1
 
 
 
+SELECT *
+From SUCHI.dbo.Housing$
 
+---Delete Unused columns
 
+Select *
+From SUCHI.dbo.Housing$
 
+ALTER TABLE SUCHI.dbo.Housing$
+DROP COLUMN OwnerAddress, TaxDistrict, PropertyAddress, SaleDate
